@@ -14,14 +14,14 @@
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-        ./configuration.nix
+        ./hosts/nixos/configuration.nix
 
         # Integrate Home Manager module into NixOS
         home-manager.nixosModules.home-manager
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.users.luigi = import ./home/luigi.nix;
+          home-manager.users.luigi = import ./users/luigi/home.nix;
         }
       ];
     };
