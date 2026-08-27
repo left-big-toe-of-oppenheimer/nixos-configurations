@@ -1,27 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  programs.zsh = {
-    enable = true;
-    enableCompletion = true;
-    autosuggestions.enable   = true;
-    syntaxHighlighting.enable = true;
-
-    interactiveShellInit = ''
-      # History
-      HISTSIZE=10000
-      SAVEHIST=10000
-      setopt HIST_IGNORE_DUPS
-      setopt SHARE_HISTORY
-
-      # Directory shortcuts
-      setopt AUTO_CD
-      setopt AUTO_PUSHD
-      setopt PUSHD_IGNORE_DUPS
-
-      # Completion tweaks
-      zstyle ':completion:*' menu select
-      zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-    '';
-  };
+  # Enable Zsh globally so it can be set as the default login shell.
+  # All user preferences, history, and syntax highlighting are managed in Home Manager (home/luigi.nix).
+  programs.zsh.enable = true;
 }
