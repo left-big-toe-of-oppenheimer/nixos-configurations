@@ -7,6 +7,7 @@
   environment.systemPackages = with pkgs; [
     vim
     wget
+    bat
     ripgrep
     fd
     fzf

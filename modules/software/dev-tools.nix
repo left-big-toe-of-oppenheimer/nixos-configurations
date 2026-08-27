@@ -6,6 +6,7 @@
   # -------------------------------------------------------------------------
   environment.systemPackages = with pkgs; [
     git
+    nil                 # Nix Language Server
     (python3.withPackages (ps: [ ps.pypdf ]))
     claude-code
     antigravity-ide
