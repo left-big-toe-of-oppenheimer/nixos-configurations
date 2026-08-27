@@ -8,6 +8,6 @@
     git
     (python3.withPackages (ps: [ ps.pypdf ]))
     claude-code
-    antigravity
+    antigravity-ide
   ];
 }
