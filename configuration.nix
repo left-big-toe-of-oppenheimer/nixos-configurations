@@ -13,7 +13,6 @@
     ./modules/system/networking.nix
     ./modules/system/audio.nix
     ./modules/system/services.nix
-    ./modules/system/shell.nix
 
     # Desktop Environment
     ./modules/desktop/desktop.nix
