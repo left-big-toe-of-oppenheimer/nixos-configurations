@@ -12,7 +12,6 @@
     ../../modules/system/locale.nix
     ../../modules/system/networking.nix
     ../../modules/system/audio.nix
-    ../../modules/system/services.nix
 
     # Desktop Environment
     ../../modules/desktop/desktop.nix
@@ -21,6 +20,7 @@
     ../../modules/software/cli-tools.nix
     ../../modules/software/desktop-apps.nix
     ../../modules/software/dev-tools.nix
+    ../../modules/software/services.nix
 
     # User accounts
     ../../users/luigi/system.nix

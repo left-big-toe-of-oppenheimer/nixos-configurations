@@ -20,6 +20,7 @@
       cl = "clear";
       rebuild = "sudo nixos-rebuild switch --flake /etc/nixos";
       conf = "cd /etc/nixos/users/luigi";
+      e0 = "echo \$0";
     };
 
     # Pure zshrc initialization

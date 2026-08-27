@@ -16,6 +16,8 @@
     procs
     rename
     tree
+    inotify-tools
+    entr
   ];
 
   # Enable Zsh globally so it can be set as the default login shell.
