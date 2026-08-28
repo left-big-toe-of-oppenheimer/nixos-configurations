@@ -84,12 +84,18 @@ rm-program nomeprogramma
 
 Dopo lancia `rebuild` e il programma sparirà letteralmente dall'esistenza sul tuo PC.
 
-### D: Come applico una modifica dopo aver editato un file?
-**R:** Digita semplicemente:
+### D: Come installo/rimuovo un SERVIZIO DI SISTEMA? (es. `docker`, `postgresql`)
+**R:** Esattamente come i programmi, ma usando gli script per i servizi:
 ```bash
-rebuild
+add-service nomeservizio
+rm-service nomeservizio
 ```
-*(È l'alias Zsh per `sudo nixos-rebuild switch --flake /etc/nixos`)*
+Questi comandi andranno a scrivere nella cartella `modules/system/services/` invece che nella tua cartella utente.
+
+### D: Qual è la differenza tra "Programmi" e "Servizi", e dove li metto? (Privilegi e Granularità)
+**R:** Questa è la regola d'oro di NixOS e Linux:
+1. **I Programmi (Home Manager):** Vivono nello *Spazio Utente*. Firefox, Zsh, WezTerm o Espanso funzionano **solo** quando l'utente Luigi ha fatto il login. Girano con i permessi di Luigi. Se hai segreti o configurazioni che non vuoi condividere con un utente ospite, usa Home Manager (`add-program`). *Nota: Home Manager può anche gestire servizi in background (come un demone per sincronizzare file personali), ma si spegneranno al tuo log-out.*
+2. **I Servizi di Sistema (NixOS systemd):** Vivono nello *Spazio di Sistema*. OpenSSH, Docker o Keyd hanno permessi di amministratore (`root`). Si avviano prima ancora del login e agiscono a livello globale (su tutto l'hardware o la rete). Usa `add-service` solo per demoni infrastrutturali globali. Se vuoi limitare chi può usarli, userai i *Gruppi* di Linux (es. solo chi è nel gruppo `docker` può usare i container).
 
 ### D: Cosa faccio se voglio aggiungere un altro utente (es. un profilo "Ospite")?
 **R:** 
@@ -102,9 +108,9 @@ rebuild
 ## 📝 4. Alias Salvati
 
 Abbiamo salvato i seguenti alias in Zsh per renderti la vita facilissima:
-- `rebuild`: Aggiorna e compila il sistema.
+- `rebuild`: Aggiorna e compila il sistema (richiede sudo per te).
 - `conf`: Ti teletrasporta istantaneamente nella cartella `cd /etc/nixos/users/luigi/`.
 - `cl`: Pulisce lo schermo (`clear`).
-- `add-program`: Lancia lo script per creare moduli software.
-- `rm-program`: Lancia lo script per cancellare moduli software.
+- `add-program` / `rm-program`: Crea/rimuovi programmi in Home Manager.
+- `add-service` / `rm-service`: Crea/rimuovi servizi di sistema.
 - `Alt + Frecce`: Per muoversi agilmente tra le parole nel terminale.
