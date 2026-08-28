@@ -23,6 +23,8 @@
       e0 = "echo \$0";
       add-program = "/etc/nixos/scripts/add-program.sh";
       rm-program = "/etc/nixos/scripts/remove-program.sh";
+      add-service = "/etc/nixos/scripts/add-service.sh";
+      rm-service = "/etc/nixos/scripts/remove-service.sh";
     };
 
     # Pure zshrc initialization

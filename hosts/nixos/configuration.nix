@@ -12,7 +12,7 @@
     ../../modules/system/locale.nix
     ../../modules/system/networking.nix
     ../../modules/system/audio.nix
-    ../../modules/system/services.nix
+    ../../modules/system/services
 
     # Desktop Environment
     ../../modules/desktop/desktop.nix
