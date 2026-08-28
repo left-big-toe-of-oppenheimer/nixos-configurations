@@ -5,6 +5,5 @@
     ./git.nix
     ./wezterm.nix
     ./zsh.nix
-    ./nvim.nix
   ];
 }
