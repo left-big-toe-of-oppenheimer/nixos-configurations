@@ -21,6 +21,7 @@
       rebuild = "sudo nixos-rebuild switch --flake /etc/nixos";
       conf = "cd /etc/nixos/users/luigi";
       e0 = "echo \$0";
+      add-program = "/etc/nixos/scripts/add-program.sh";
     };
 
     # Pure zshrc initialization

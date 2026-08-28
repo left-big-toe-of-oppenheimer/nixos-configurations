@@ -13,6 +13,11 @@
     ./programs
   ];
 
+  # Add custom scripts directory to PATH
+  home.sessionPath = [
+    "/etc/nixos/scripts"
+  ];
+
   # Home Manager state version
   home.stateVersion = "26.05";
 
