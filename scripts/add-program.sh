@@ -37,7 +37,17 @@ sed -i "/  ];/i \\    ./$PROGRAM.nix" "$DEFAULT_FILE"
 
 echo "Added ./$PROGRAM.nix to $DEFAULT_FILE"
 
-# 3. Track in Git
+# 3. Automatic Deduplication from System Packages
+# If the program was previously installed globally, remove it to prevent duplicates
+for file in /etc/nixos/modules/software/*.nix; do
+  if grep -qE "^[[:space:]]+$PROGRAM([[:space:]]+.*)?$" "$file"; then
+    sed -i -E "/^[[:space:]]+$PROGRAM([[:space:]]+.*)?$/d" "$file"
+    echo "Automagic: Removed duplicate '$PROGRAM' from $file"
+    git add "$file"
+  fi
+done
+
+# 4. Track in Git
 cd /etc/nixos || exit 1
 git add "$TARGET_FILE" "$DEFAULT_FILE"
 git commit -m "feat(home): auto-scaffold $PROGRAM"

@@ -22,6 +22,7 @@
       conf = "cd /etc/nixos/users/luigi";
       e0 = "echo \$0";
       add-program = "/etc/nixos/scripts/add-program.sh";
+      rm-program = "/etc/nixos/scripts/remove-program.sh";
     };
 
     # Pure zshrc initialization
