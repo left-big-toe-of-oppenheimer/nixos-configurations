@@ -5,7 +5,6 @@
   # Development Tools & Scripting Runtimes
   # -------------------------------------------------------------------------
   environment.systemPackages = with pkgs; [
-    git
     nil                 # Nix Language Server
     (python3.withPackages (ps: [ ps.pypdf ]))
     claude-code

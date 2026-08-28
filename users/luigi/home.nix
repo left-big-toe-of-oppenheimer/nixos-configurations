@@ -10,9 +10,7 @@
   ];
 
   imports = [
-    ./programs/git.nix
-    ./programs/wezterm.nix
-    ./programs/zsh.nix
+    ./programs
   ];
 
   # Home Manager state version
