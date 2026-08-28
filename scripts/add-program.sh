@@ -36,4 +36,10 @@ echo "Created $TARGET_FILE"
 sed -i "/  ];/i \\    ./$PROGRAM.nix" "$DEFAULT_FILE"
 
 echo "Added ./$PROGRAM.nix to $DEFAULT_FILE"
-echo "Done! You can now edit $TARGET_FILE"
+
+# 3. Track in Git
+cd /etc/nixos || exit 1
+git add "$TARGET_FILE" "$DEFAULT_FILE"
+git commit -m "feat(home): auto-scaffold $PROGRAM"
+
+echo "Done! You can now edit $TARGET_FILE and run 'rebuild' when ready."
