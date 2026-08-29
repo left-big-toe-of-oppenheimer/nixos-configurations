@@ -5,5 +5,6 @@
     ./git.nix
     ./wezterm.nix
     ./zsh.nix
+    ./htop.nix
   ];
 }
