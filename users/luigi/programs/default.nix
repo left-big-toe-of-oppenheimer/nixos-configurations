@@ -6,6 +6,5 @@
     ./wezterm.nix
     ./zsh.nix
     ./uv.nix
-    ./nix-ld.nix
   ];
 }
