@@ -7,12 +7,20 @@
       local wezterm = require 'wezterm'
       local config = wezterm.config_builder()
 
-      -- Increase default font size & window opacity
+      -- Font configuration for maximum sharpness and readability
+      config.font = wezterm.font_with_fallback {
+        'JetBrains Mono',
+        'Noto Sans Mono',
+        'DejaVu Sans Mono',
+      }
       config.font_size = 14.0
-      config.window_background_opacity = 0.80
+      config.line_height = 1.15
 
-      -- Native WezTerm color scheme
-      config.color_scheme = 'Catppuccin Mocha'
+      -- Fully opaque solid background to eliminate background bleed-through and increase contrast
+      config.window_background_opacity = 1.0
+
+      -- High-contrast Tokyo Night color scheme matching Neovim
+      config.color_scheme = 'Tokyo Night'
 
       -- Keybindings for word navigation (Ctrl+Arrows) and word deletion (Ctrl+Backspace / Ctrl+Delete)
       config.keys = {

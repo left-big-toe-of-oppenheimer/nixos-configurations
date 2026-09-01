@@ -18,12 +18,8 @@
     # Oh My Zsh theme & plugin integration
     oh-my-zsh = {
       enable = true;
-      theme = "random";
+      theme = "robbyrussell";
       plugins = [ "git" "sudo" "dirhistory" ];
-      extraConfig = ''
-        # Randomly select between floating cloud, lambda, and minimalist time tracking themes
-        ZSH_THEME_RANDOM_CANDIDATES=( "cloud" "lambda" "fino-time" )
-      '';
     };
 
     # Custom aliases
