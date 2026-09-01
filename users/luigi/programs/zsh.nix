@@ -7,13 +7,6 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
-    envExtra = ''
-      export PATH="$HOME/.global-env/bin:$PATH"
-      export VIRTUAL_ENV="$HOME/.global-env"
-    '';
-
-
-
     # Elegant history management
     history = {
       size = 10000;
@@ -44,7 +37,6 @@
       rm-program = "remove-program.sh";
       add-service = "add-service.sh";
       rm-service = "remove-service.sh";
-      sync-python-env = "sync-python-env.sh";
     
 
       # Colored & Iconified directory listings

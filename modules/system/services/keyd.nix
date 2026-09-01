@@ -14,8 +14,8 @@
         };
 
         main = {
-          # Trasforma Caps Lock in un toggle per il layer 'caps_active'
-          capslock = "toggle(caps_active)";
+          # Trasforma Caps Lock in toggle per il Caps Lock di sistema (lettere maiuscole) e per il layer 'caps_active'
+          capslock = "togglem(caps_active, capslock)";
 
           # Shift+tasto come azione predefinita (default action)
           "1" = "S-1";
@@ -47,8 +47,8 @@
 
         # Definizione del layer attivo con Caps Lock
         caps_active = {
-          # Premere di nuovo Caps Lock disattiva il layer
-          capslock = "toggle(caps_active)";
+          # Premere di nuovo Caps Lock disattiva il Caps Lock di sistema e il layer
+          capslock = "togglem(caps_active, capslock)";
 
           # Numeri come conseguenza del Caps Lock attivo
           "1" = "1";

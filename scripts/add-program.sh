@@ -38,10 +38,10 @@ sed -i "/  ];/i \\    ./$PROGRAM.nix" "$DEFAULT_FILE"
 echo "Added ./$PROGRAM.nix to $DEFAULT_FILE"
 
 # 3. Automatic Deduplication from System Packages
-# If the program was previously installed globally, remove it to prevent duplicates
+# If the program was previously installed globally (e.g. in dev-tools.nix, cli-tools.nix, desktop-apps.nix), remove it to prevent duplicates
 for file in /etc/nixos/modules/software/*.nix; do
-  if grep -qE "^[[:space:]]+$PROGRAM([[:space:]]+.*)?$" "$file"; then
-    sed -i -E "/^[[:space:]]+$PROGRAM([[:space:]]+.*)?$/d" "$file"
+  if grep -qE "^[[:space:]]*(\([[:space:]]*)?([a-zA-Z0-9_.-]+\.)*$PROGRAM([[:space:]]+.*|[.)].*)?$" "$file"; then
+    sed -i -E "/^[[:space:]]*(\([[:space:]]*)?([a-zA-Z0-9_.-]+\.)*$PROGRAM([[:space:]]+.*|[.)].*)?$/d" "$file"
     echo "Automagic: Removed duplicate '$PROGRAM' from $file"
     git add "$file"
   fi
