@@ -17,10 +17,13 @@ in
     '';
   };
 
-  # Symlink LazyVim configuration structure into ~/.config/nvim/lua
-  xdg.configFile."nvim/lua/config".source = ./nvim/lua/config;
-  xdg.configFile."nvim/lua/plugins/example.lua".source = ./nvim/lua/plugins/example.lua;
-  xdg.configFile."nvim/lua/plugins/lang.lua".source = ./nvim/lua/plugins/lang.lua;
-  xdg.configFile."nvim/lua/plugins/lsp.lua".source = ./nvim/lua/plugins/lsp.lua;
-  xdg.configFile."nvim/lua/plugins/theme.lua".text = theme.neovim.themePlugin;
+  # Symlink LazyVim configuration directory with the active theme from theme.nix
+  xdg.configFile."nvim/lua".source = pkgs.runCommand "nvim-lua-config" {} ''
+    mkdir -p $out
+    cp -r ${./nvim/lua}/* $out/
+    chmod -R u+w $out
+    cat << 'EOF' > $out/plugins/theme.lua
+${theme.neovim.themePlugin}
+EOF
+  '';
 }
