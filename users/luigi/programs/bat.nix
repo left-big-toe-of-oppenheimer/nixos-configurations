@@ -1,10 +1,13 @@
 { config, pkgs, ... }:
 
+let
+  theme = import ../theme.nix { inherit (pkgs) lib; };
+in
 {
   programs.bat = {
     enable = true;
     config = {
-      theme = "TwoDark";
+      theme = "${theme.bat.theme}";
     };
   };
 }

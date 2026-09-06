@@ -1,5 +1,8 @@
 { config, pkgs, ... }:
 
+let
+  theme = import ../theme.nix { inherit (pkgs) lib; };
+in
 {
   programs.wezterm = {
     enable = true;
@@ -16,11 +19,9 @@
       config.font_size = 14.0
       config.line_height = 1.15
 
-      -- Fully opaque solid background to eliminate background bleed-through and increase contrast
-      config.window_background_opacity = 1.0
-
-      -- High-contrast Tokyo Night color scheme matching Neovim
-      config.color_scheme = 'Tokyo Night'
+      -- Window opacity & color scheme dynamically configured from theme.nix
+      config.window_background_opacity = ${theme.wezterm.opacity}
+      config.color_scheme = '${theme.wezterm.colorScheme}'
 
       -- Keybindings for word navigation (Ctrl+Arrows) and word deletion (Ctrl+Backspace / Ctrl+Delete)
       config.keys = {

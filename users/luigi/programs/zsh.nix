@@ -1,5 +1,8 @@
 { config, pkgs, ... }:
 
+let
+  theme = import ../theme.nix { inherit (pkgs) lib; };
+in
 {
   programs.zsh = {
     enable = true;
@@ -15,11 +18,14 @@
       share = true;
     };
 
-    # Oh My Zsh theme & plugin integration
+    # Oh My Zsh theme & plugin integration (dynamically configured from theme.nix)
     oh-my-zsh = {
       enable = true;
-      theme = "robbyrussell";
+      theme = "${theme.zsh.theme}";
       plugins = [ "git" "sudo" "dirhistory" ];
+      extraConfig = ''
+        ${theme.zsh.extraConfig}
+      '';
     };
 
     # Custom aliases
