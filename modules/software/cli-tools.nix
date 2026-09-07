@@ -4,11 +4,6 @@ let
   tesseractWithLangs = pkgs.tesseract.override {
     enableLanguages = [ "eng" "ita" "osd" ];
   };
-
-  pacnix = pkgs.writeScriptBin "pacnix" ''
-    #!${pkgs.python3}/bin/python3
-    ${builtins.readFile ../../refactoring/pacnix.py}
-  '';
 in
 {
   # -------------------------------------------------------------------------
@@ -29,9 +24,6 @@ in
     diffutils
     patch
 
-    # Database-driven NixOS manager & registry CLI
-    pacnix
-
     # Terminal navigation, monitoring & tools
     fzf
     eza
@@ -44,6 +36,8 @@ in
     # OCR Language Models & Utilities
     tesseractWithLangs
     libqalculate
+
+    ffmpeg
   ];
 
   # Export TESSDATA_PREFIX so graphical apps like Spectacle find the OCR traineddata models

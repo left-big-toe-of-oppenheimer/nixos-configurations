@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
 
 {
-  _module.args.theme = import ./theme.nix { inherit lib; };
 
   home.username = "luigi";
   home.homeDirectory = "/home/luigi";

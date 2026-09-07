@@ -40,12 +40,6 @@ in
       e0 = "echo \$0";
       open = "xdg-open";
 
-      # Pacman-style Database Manager integration
-      add-program = "pacnix add";
-      rm-program = "pacnix remove";
-      audit = "pacnix audit";
-      p = "pacnix";
-
       # Colored & Iconified directory listings
       ls = "eza --icons=auto --group-directories-first";
       l = "eza -l --icons=auto --group-directories-first";
