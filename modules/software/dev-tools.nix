@@ -74,5 +74,6 @@
     nodejs
     rustc
     cargo
+    yt-dlp
   ];
 }
