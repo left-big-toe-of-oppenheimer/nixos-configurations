@@ -1,13 +1,13 @@
 { config, pkgs, ... }:
 
 let
-  theme = import ../theme.nix { inherit (pkgs) lib; };
+  theme = import ../theme.nix;
 in
 {
   programs.bat = {
     enable = true;
     config = {
-      theme = "${theme.bat.theme}";
+      theme = if theme == "tokyonight" then "TwoDark" else "Catppuccin Mocha";
     };
   };
 }

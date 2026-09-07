@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  theme = import ../theme.nix { inherit (pkgs) lib; };
+  theme = import ../theme.nix;
 in
 {
   programs.zsh = {
@@ -18,28 +18,33 @@ in
       share = true;
     };
 
-    # Oh My Zsh theme & plugin integration (dynamically configured from theme.nix)
-    oh-my-zsh = {
+    # Oh My Zsh theme & plugin integration
+    oh-my-zsh = if theme == "tokyonight" then {
       enable = true;
-      theme = "${theme.zsh.theme}";
+      theme = "robbyrussell";
+      plugins = [ "git" "sudo" "dirhistory" ];
+    } else {
+      enable = true;
+      theme = "random";
       plugins = [ "git" "sudo" "dirhistory" ];
       extraConfig = ''
-        ${theme.zsh.extraConfig}
+        ZSH_THEME_RANDOM_CANDIDATES=( "cloud" "lambda" "fino-time" )
       '';
     };
 
     # Custom aliases
     shellAliases = {
       cl = "clear";
-      rebuild = "sudo nixos-rebuild switch --flake /etc/nixos";
-      conf = "cd /etc/nixos/users/luigi";
+      rebuild = "sudo nixos-rebuild switch --flake \"\${NIXOS_CONFIG_DIR:-$HOME/nixos}\"";
+      conf = "cd \"\${NIXOS_CONFIG_DIR:-$HOME/nixos}\"";
       e0 = "echo \$0";
-      open ="xdg-open";
-      add-program = "add-program.sh";
-      rm-program = "remove-program.sh";
-      add-service = "add-service.sh";
-      rm-service = "remove-service.sh";
-    
+      open = "xdg-open";
+
+      # Pacman-style Database Manager integration
+      add-program = "pacnix add";
+      rm-program = "pacnix remove";
+      audit = "pacnix audit";
+      p = "pacnix";
 
       # Colored & Iconified directory listings
       ls = "eza --icons=auto --group-directories-first";

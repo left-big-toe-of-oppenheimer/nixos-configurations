@@ -1,6 +1,8 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
+  _module.args.theme = import ./theme.nix { inherit lib; };
+
   home.username = "luigi";
   home.homeDirectory = "/home/luigi";
 
@@ -13,10 +15,6 @@
     ./programs
   ];
 
-  # Add custom scripts directory to PATH
-  home.sessionPath = [
-    "/etc/nixos/scripts"
-  ];
 
   # Home Manager state version
   home.stateVersion = "26.05";

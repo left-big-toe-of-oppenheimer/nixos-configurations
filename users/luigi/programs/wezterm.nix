@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  theme = import ../theme.nix { inherit (pkgs) lib; };
+  theme = import ../theme.nix;
 in
 {
   programs.wezterm = {
@@ -19,9 +19,14 @@ in
       config.font_size = 14.0
       config.line_height = 1.15
 
-      -- Window opacity & color scheme dynamically configured from theme.nix
-      config.window_background_opacity = ${theme.wezterm.opacity}
-      config.color_scheme = '${theme.wezterm.colorScheme}'
+      -- Global style selected via theme.nix
+      ${if theme == "tokyonight" then ''
+        config.color_scheme = 'Tokyo Night'
+        config.window_background_opacity = 1.0
+      '' else ''
+        config.color_scheme = 'Catppuccin Mocha'
+        config.window_background_opacity = 0.80
+      ''}
 
       -- Keybindings for word navigation (Ctrl+Arrows) and word deletion (Ctrl+Backspace / Ctrl+Delete)
       config.keys = {

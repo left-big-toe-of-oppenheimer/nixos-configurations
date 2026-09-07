@@ -57,60 +57,69 @@ Invece di modificare questo file a mano o creare manualmente i file `.nix`, abbi
 
 ---
 
-## ❓ 3. FAQ: Come si fa? (Cheat Sheet)
+## ❓ 3. FAQ: Gestione Software con `pacnix` (Il Metodo a Database)
 
-### D: Come installo un nuovo programma? (es. `htop`, `vscode`, `spotify`)
-**R:** Apri il terminale in una qualsiasi cartella e usa il tuo comando alias magico:
+Il sistema ora adotta l'architettura a **Database Centralizzato** (`refactoring/manifest.toml`) tramite la CLI **`pacnix`** (o l'alias breve `p`). 
+Questo approccio garantisce:
+- **Zero duplicazioni** tra System e Home Manager.
+- **Ispezione istantanea** come in Pacman (`pacnix query`, `pacnix audit`).
+- **Nessuna corruzione da script regex**: il codice Nix viene validato prima di essere generato.
+
+### D: Come installo un nuovo programma?
+**R:** Usa il comando `pacnix add` (o l'alias salvato `add-program`):
 ```bash
-add-program nomeprogramma
+# Per un programma utente (es. fastfetch, btop)
+pacnix add nomeprogramma
+
+# Per un programma o utility di sistema (disponibile anche a root / rescue shell)
+pacnix add nomeprogramma --scope system
 ```
 *Cosa succede in background?*
-1. Crea un file template in `users/luigi/programs/nomeprogramma.nix`.
-2. Aggiunge il file al registro `default.nix`.
-3. Controlla se per caso lo avevi installato nei file di sistema in `modules/software/` e, se lo trova, lo disinstalla da lì per evitare doppioni!
-4. Salva la modifica su Git in automatico.
+1. Registra il pacchetto nel database centrale `refactoring/manifest.toml`.
+2. Rileva automaticamente se il software richiede un modulo Home Manager (`programs.<name>`) o un pacchetto puro (`home.packages` o `environment.systemPackages`).
+3. Verifica che non sia già fornito da Plasma 6 o dal sistema.
+4. Rigenera in sicurezza i moduli Nix puliti.
 
-A questo punto apri il file appena creato, scrivi i tuoi config (se ne hai), e lancia `rebuild`.
+Dopo lancia `rebuild` per applicare i cambiamenti.
 
-### D: Come rimuovo un programma che non mi serve più?
-**R:** Apri il terminale e digita:
+### D: Come rimuovo un programma?
+**R:** Usa `pacnix remove` (o l'alias `rm-program`):
 ```bash
-rm-program nomeprogramma
+pacnix remove nomeprogramma
 ```
-*Cosa succede in background?*
-1. Cancella il file da `users/luigi/programs/`.
-2. Lo rimuove dal registro `default.nix`.
-3. Registra la disinstallazione su Git.
+E poi lancia `rebuild`.
 
-Dopo lancia `rebuild` e il programma sparirà letteralmente dall'esistenza sul tuo PC.
-
-### D: Come installo/rimuovo un SERVIZIO DI SISTEMA? (es. `docker`, `postgresql`)
-**R:** Esattamente come i programmi, ma usando gli script per i servizi:
+### D: Come scopro cosa è installato e chi lo possiede? (Come `pacman`)
+**R:**
 ```bash
-add-service nomeservizio
-rm-service nomeservizio
+# Lista tutti i programmi installati esplicitamente (come pacman -Qe):
+pacnix query -e
+
+# Ispeziona i dettagli, motivo e dotfiles di un pacchetto (come pacman -Qi):
+pacnix query -i wezterm
+
+# Scopri quale pacchetto possiede un file di configurazione (come pacman -Qo):
+pacnix query -o ~/.config/wezterm/wezterm.lua
+
+# Esegui un audit completo del sistema per scovare conflitti e duplicati:
+pacnix audit
 ```
-Questi comandi andranno a scrivere nella cartella `modules/system/services/` invece che nella tua cartella utente.
 
-### D: Qual è la differenza tra "Programmi" e "Servizi", e dove li metto? (Privilegi e Granularità)
-**R:** Questa è la regola d'oro di NixOS e Linux:
-1. **I Programmi (Home Manager):** Vivono nello *Spazio Utente*. Firefox, Zsh, WezTerm o Espanso funzionano **solo** quando l'utente Luigi ha fatto il login. Girano con i permessi di Luigi. Se hai segreti o configurazioni che non vuoi condividere con un utente ospite, usa Home Manager (`add-program`). *Nota: Home Manager può anche gestire servizi in background (come un demone per sincronizzare file personali), ma si spegneranno al tuo log-out.*
-2. **I Servizi di Sistema (NixOS systemd):** Vivono nello *Spazio di Sistema*. OpenSSH, Docker o Keyd hanno permessi di amministratore (`root`). Si avviano prima ancora del login e agiscono a livello globale (su tutto l'hardware o la rete). Usa `add-service` solo per demoni infrastrutturali globali. Se vuoi limitare chi può usarli, userai i *Gruppi* di Linux (es. solo chi è nel gruppo `docker` può usare i container).
-
-### D: Cosa faccio se voglio aggiungere un altro utente (es. un profilo "Ospite")?
-**R:** 
-1. Crea un file `users/ospite/system.nix` e definisci l'account (come hai fatto in `users/luigi/system.nix`).
-2. Mettilo in `configuration.nix`.
-3. Se vuoi che abbia dei programmi grafici di base, crea `users/ospite/home.nix` e dichiarali lì dentro. Questo ti assicurerà che l'utente Ospite non abbia accesso al tuo WezTerm customizzato o al tuo Git privato!
+### D: Qual è la differenza tra "System" e "Home Manager", e dove metto i programmi?
+**R:**
+1. **Workstation / System (`--scope system`):** Tutti i binari generici (es. `ripgrep`, `gcc`, `git`, `curl`, `jq`, `mpv`) e gli strumenti che devono funzionare anche per l'utente `root`, nei demoni systemd o nelle shell di emergenza.
+2. **User / Home Manager (`--scope user:luigi`):** Tutto ciò che contiene la tua **identità e personalizzazione profonda** (es. `wezterm` con i tuoi font/opacità, `git` con la tua email/chiavi, `zsh` con i tuoi prompt, `neovim` con i tuoi plugin).
 
 ---
 
 ## 📝 4. Alias Salvati
 
 Abbiamo salvato i seguenti alias in Zsh per renderti la vita facilissima:
-- `rebuild`: Aggiorna e compila il sistema (richiede sudo per te).
-- `conf`: Ti teletrasporta istantaneamente nella cartella `cd /etc/nixos/users/luigi/`.
+- `rebuild`: Aggiorna e compila il sistema (rileva dinamicamente la repo Git).
+- `conf`: Ti teletrasporta istantaneamente nella cartella della configurazione.
 - `cl`: Pulisce lo schermo (`clear`).
-- `add-program` / `rm-program`: Crea/rimuovi programmi in Home Manager.
-- `add-service` / `rm-service`: Crea/rimuovi servizi di sistema.
+- `p` / `pacnix`: CLI del gestore database centralizzato.
+- `audit`: Controlla lo stato di salute della configurazione e dei dotfiles (`pacnix audit`).
+- `add-program` / `rm-program`: Alias intuitivi per `pacnix add` e `pacnix remove`.
 - `Alt + Frecce`: Per muoversi agilmente tra le parole nel terminale.
+

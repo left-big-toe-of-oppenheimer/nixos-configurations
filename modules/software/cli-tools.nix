@@ -1,5 +1,15 @@
 { config, lib, pkgs, ... }:
 
+let
+  tesseractWithLangs = pkgs.tesseract.override {
+    enableLanguages = [ "eng" "ita" "osd" ];
+  };
+
+  pacnix = pkgs.writeScriptBin "pacnix" ''
+    #!${pkgs.python3}/bin/python3
+    ${builtins.readFile ../../refactoring/pacnix.py}
+  '';
+in
 {
   # -------------------------------------------------------------------------
   # Command-Line Tools & Terminal Utilities
@@ -10,6 +20,7 @@
     binutils
     curl
     wget
+    git
     unzip
     jq
     ripgrep
@@ -18,8 +29,10 @@
     diffutils
     patch
 
-    # Terminal navigation, monitoring & editing
-    vim
+    # Database-driven NixOS manager & registry CLI
+    pacnix
+
+    # Terminal navigation, monitoring & tools
     fzf
     eza
     btop
@@ -29,18 +42,13 @@
     entr
 
     # OCR Language Models & Utilities
-    (tesseract.override {
-      enableLanguages = [ "eng" "ita" "osd" ];
-    })
+    tesseractWithLangs
     libqalculate
   ];
 
   # Export TESSDATA_PREFIX so graphical apps like Spectacle find the OCR traineddata models
   environment.sessionVariables = {
-    TESSDATA_PREFIX = "/run/current-system/sw/share/tessdata";
-  };
-  environment.variables = {
-    TESSDATA_PREFIX = "/run/current-system/sw/share/tessdata";
+    TESSDATA_PREFIX = "${tesseractWithLangs}/share/tessdata";
   };
 
   # Enable Zsh globally so it can be set as the default login shell.

@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  theme = import ../theme.nix { inherit (pkgs) lib; };
+  theme = import ../theme.nix;
 in
 {
   programs.neovim = {
@@ -13,17 +13,11 @@ in
     withPython3 = true;
 
     initLua = ''
+      vim.g.theme_style = "${theme}"
       require("config.lazy")
     '';
   };
 
-  # Symlink LazyVim configuration directory with the active theme from theme.nix
-  xdg.configFile."nvim/lua".source = pkgs.runCommand "nvim-lua-config" {} ''
-    mkdir -p $out
-    cp -r ${./nvim/lua}/* $out/
-    chmod -R u+w $out
-    cat << 'EOF' > $out/plugins/theme.lua
-${theme.neovim.themePlugin}
-EOF
-  '';
+  # Standard static directory symlink
+  xdg.configFile."nvim/lua".source = ./nvim/lua;
 }

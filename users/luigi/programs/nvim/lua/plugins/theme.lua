@@ -1,12 +1,36 @@
 -- =============================================================================
--- Active Neovim Theme Selector
--- Toggle by commenting / uncommenting ONE of the lines below:
+-- Active Neovim Theme Configuration
 -- =============================================================================
-local active_style = "tokyonight" -- Style 1: High-Contrast Solid (Tokyo Night)
--- local active_style = "catppuccin" -- Style 2: Translucent Aesthetic (Catppuccin Mocha)
+-- NOTE: This file is dynamically generated and deployed by NixOS / Home Manager
+-- via `users/luigi/theme.nix`.
+--
+-- To change the global theme across Neovim, WezTerm, Bat, and Zsh, edit:
+--   `users/luigi/theme.nix` -> change `selectedStyle` -> run `rebuild`.
+--
+-- Any manual changes made directly to this file in the nix store will be
+-- overwritten on the next rebuild.
 -- =============================================================================
 
-if active_style == "tokyonight" then
+local style = vim.g.theme_style or "tokyonight"
+
+if style == "catppuccin" then
+  return {
+    {
+      "catppuccin/nvim",
+      name = "catppuccin",
+      opts = {
+        flavour = "mocha",
+        transparent_background = true,
+      },
+    },
+    {
+      "LazyVim/LazyVim",
+      opts = {
+        colorscheme = "catppuccin",
+      },
+    },
+  }
+else
   return {
     {
       "folke/tokyonight.nvim",
@@ -26,23 +50,6 @@ if active_style == "tokyonight" then
       "LazyVim/LazyVim",
       opts = {
         colorscheme = "tokyonight-night",
-      },
-    },
-  }
-else
-  return {
-    {
-      "catppuccin/nvim",
-      name = "catppuccin",
-      opts = {
-        flavour = "mocha",
-        transparent_background = true,
-      },
-    },
-    {
-      "LazyVim/LazyVim",
-      opts = {
-        colorscheme = "catppuccin",
       },
     },
   }
