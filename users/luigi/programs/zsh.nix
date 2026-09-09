@@ -40,6 +40,12 @@ in
       e0 = "echo \$0";
       open = "xdg-open";
 
+      # Program & Service scaffolding helpers
+      add-program = "add-program.sh";
+      rm-program = "remove-program.sh";
+      add-service = "add-service.sh";
+      rm-service = "remove-service.sh";
+
       # Colored & Iconified directory listings
       ls = "eza --icons=auto --group-directories-first";
       l = "eza -l --icons=auto --group-directories-first";
