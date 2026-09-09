@@ -10,5 +10,7 @@
     kdePackages.falkon
     wofi
     wl-clipboard          # Wayland clipboard helper
+
+    localsend
   ];
 }

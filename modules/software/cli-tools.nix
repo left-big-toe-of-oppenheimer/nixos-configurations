@@ -38,6 +38,11 @@ in
     libqalculate
 
     ffmpeg
+    libheif	# To Convert HEIF file to jpg and others
+    
+    # markdown editors & visualizers
+    glow
+    mdcat
   ];
 
   # Export TESSDATA_PREFIX so graphical apps like Spectacle find the OCR traineddata models
