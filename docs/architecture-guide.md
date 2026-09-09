@@ -232,7 +232,139 @@ Se un programma genera un file regolare in `~/.config` che entra in collisione c
 
 ---
 
-## ⚡ 5. Cheat Sheet dei Comandi
+## 🛠️ 5. Gestione Librerie & Linguaggi di Programmazione (Python, Rust, C/C++)
+
+In NixOS, la gestione delle librerie per lo sviluppo software segue logiche specifiche per evitare conflitti e garantire la riproducibilità. Ecco le opzioni disponibili per ciascun ecosistema.
+
+---
+
+### 🐍 Python: Le 3 Opzioni a Confronto
+
+```mermaid
+graph TD
+    subgraph PythonWorkflows ["Opzioni di Sviluppo Python"]
+        P1["Opzione 1: Librerie Globali in NixOS<br/>(modules/software/dev-tools.nix)"]
+        P2["Opzione 2: Virtualenv Locali con uv<br/>(uv venv + uv pip/add)"]
+        P3["Opzione 3: Nix-Shell per Progetto<br/>(shell.nix / nix develop)"]
+    end
+    
+    P1 -->|Uso ideale| U1["Script standalone, IPython, Data Analysis quotidiana"]
+    P2 -->|Uso ideale| U2["Progetti complessi, pyproject.toml, librerie PyPI veloci"]
+    P3 -->|Uso ideale| U3["Riproducibilità 100% pura per repository condivisi"]
+```
+
+#### Opzione 1: Librerie Globali Dichiarative in NixOS (Per utility e analisi quotidiana)
+Se usi librerie frequentemente da riga di comando o in sessioni interattive con `ipython`, puoi dichiararle globalmente in [`modules/software/dev-tools.nix`](../modules/software/dev-tools.nix):
+
+```nix
+  (python3.withPackages (ps: with ps; [
+    requests
+    rich
+    pandas
+    polars
+    numpy
+    scipy
+    scikit-learn
+    matplotlib
+    seaborn
+    ipython
+    # Aggiungi qui nuove librerie (es. ps.flask, ps.torch)
+  ]))
+```
+*Vantaggio:* Disponibili istantaneamente ovunque nel sistema senza attivare venv.
+
+#### Opzione 2: Virtual Environment con `uv` (Raccomandato per Progetti Reali)
+Il tuo sistema ha **`uv`** e **`nix-ld`** già configurati. Questo ti permette di creare ambienti virtuali e installare qualunque wheel binario da PyPI a velocità istantanea:
+
+```bash
+# 1. Crea l'ambiente virtuale
+uv venv
+
+# 2. Attiva il venv
+source .venv/bin/activate
+
+# 3. Installa o aggiungi pacchetti (anche binari C/C++ come torch o polars)
+uv pip install requests fastapi uvicorn
+# oppure con pyproject.toml:
+uv add fastapi
+```
+*Vantaggio:* Nessun inquinamento di Nix, massima compatibilità con l'ecosistema Python moderno, velocissimo.
+
+#### Opzione 3: Shell Nix Ephemerale (`nix-shell`)
+Per testare una libreria al volo senza modificare la configurazione di sistema e senza creare file sul disco:
+
+```bash
+nix-shell -p "python3.withPackages (ps: [ ps.aiohttp ps.playwright ])"
+```
+
+---
+
+### 🦀 Rust: Le 3 Opzioni a Confronto
+
+In NixOS, l'intero toolchain di base (`rustc`, `cargo`, `rust-analyzer`) è già installato a livello di sistema in [`modules/software/dev-tools.nix`](../modules/software/dev-tools.nix).
+
+```mermaid
+graph TD
+    subgraph RustWorkflows ["Opzioni di Sviluppo Rust"]
+        R1["Opzione 1: Cargo Standard<br/>(Cargo.toml + cargo add)"]
+        R2["Opzione 2: Crate con Dipendenze C Native<br/>(pkg-config + C Headers)"]
+        R3["Opzione 3: Toolchain Speciali (Nightly / WASM)<br/>(Fenix / Rust-Overlay via Flake)"]
+    end
+    
+    R1 -->|Uso ideale| RU1["99% dello sviluppo Rust standard"]
+    R2 -->|Uso ideale| RU2["Crate che usano OpenSSL, SQLite, Alsa native"]
+    R3 -->|Uso ideale| RU3["Compilazione Nightly, WebAssembly, Embedded"]
+```
+
+#### Opzione 1: Flusso Standard con Cargo (Il Metodo Standard)
+Aggiungere librerie (crate) a un progetto Rust in NixOS funziona esattamente come su qualsiasi altra distribuzione Linux:
+
+```bash
+# 1. Crea il progetto
+cargo new mio-progetto
+cd mio-progetto
+
+# 2. Aggiungi le librerie
+cargo add serde --features derive
+cargo add tokio --features full
+cargo add axum
+```
+Cargo scaricherà i sorgenti in `~/.cargo/` e compilerà i binari in `./target/`.
+
+#### Opzione 2: Crate con Dipendenze C Native (es. OpenSSL, SQLite)
+Alcuni crate compilano codice C tramite bindgen (es. `openssl-sys`, `libsqlite3-sys`):
+- Il sistema ha già `pkg-config`, `gcc` e `clang` installati globalmente in `dev-tools.nix`.
+- Se un crate richiede header di una libreria C specifica:
+  - **A livello di sistema**: aggiungi la libreria (es. `openssl.dev`) a [`dev-tools.nix`](../modules/software/dev-tools.nix).
+  - **A livello di singolo progetto**: crea un file `shell.nix` nella cartella del progetto:
+    ```nix
+    { pkgs ? import <nixpkgs> {} }:
+    pkgs.mkShell {
+      nativeBuildInputs = with pkgs; [ pkg-config ];
+      buildInputs = with pkgs; [ openssl ];
+    }
+    ```
+
+#### Opzione 3: Toolchain Nightly o Target Esotici (WASM / Embedded)
+Se un progetto richiede una versione specifica di Rust (es. `nightly` o target `wasm32-unknown-unknown`):
+- Si usa un Flake con l'overlay **`fenix`** o **`rust-overlay`** all'interno del repository del progetto.
+
+---
+
+### 💻 C / C++: Header, Compilatori e LSP
+
+Nel tuo sistema sono già installati:
+- **Compilatori & Build System**: `gcc`, `clang`, `gnumake`, `cmake`, `ninja`.
+- **LSP & Strumenti di Analisi**: `clang-tools` (`clangd` integrato con LazyVim), `valgrind`, `gdb`.
+- **Librerie C installate**: `tesseract`, `libqalculate`, ecc.
+
+Per sviluppare progetti in C (come le esercitazioni in `~/Programming/OS/`):
+- Puoi usare normali `Makefile` o `CMakeLists.txt`.
+- `clangd` integrato in Neovim leggerà automaticamente i file `.c` e `.h` o il file `compile_commands.json` (generabile tramite `bear -- make`).
+
+---
+
+## ⚡ 6. Cheat Sheet dei Comandi
 
 ### Operazioni Quotidiane
 ```bash
