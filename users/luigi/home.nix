@@ -17,6 +17,7 @@
   # Add custom scripts directory to PATH
   home.sessionPath = [
     "/etc/nixos/scripts"
+    "/home/luigi/nixos/scripts/video-editing"
   ];
 
 

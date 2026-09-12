@@ -19,7 +19,7 @@
 
     # Software scopes
     ../../modules/software/cli-tools.nix
-    ../../modules/software/desktop-apps.nix
+    ../../modules/software/gui-apps.nix
     ../../modules/software/dev-tools.nix
 
     # User accounts

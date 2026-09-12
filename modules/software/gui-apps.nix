@@ -12,5 +12,7 @@
     wl-clipboard          # Wayland clipboard helper
 
     localsend
+    typora
+    spotify
   ];
 }
