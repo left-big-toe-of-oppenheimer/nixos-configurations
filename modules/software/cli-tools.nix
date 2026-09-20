@@ -43,6 +43,27 @@ in
     # markdown editors & visualizers
     glow
     mdcat
+
+    # usb mangement
+    usbutils
+
+
+    # epub to kepub conversion
+    (stdenv.mkDerivation rec {
+    pname = "kepubify";
+    version = "4.0.4";
+
+    src = fetchurl {
+      url = "https://github.com/pgaskin/kepubify/releases/download/v${version}/kepubify-linux-64bit";
+      hash = "sha256-N9dyjcXFywZ2B38n/TB15y4rth8mn55e4l99dx/B/F0=";
+    };
+
+    dontUnpack = true;
+
+    installPhase = ''
+      install -D -m 755 $src $out/bin/kepubify
+    '';
+  })
   ];
 
   # Export TESSDATA_PREFIX so graphical apps like Spectacle find the OCR traineddata models
