@@ -55,7 +55,8 @@ in
 
     src = fetchurl {
       url = "https://github.com/pgaskin/kepubify/releases/download/v${version}/kepubify-linux-64bit";
-      hash = "sha256-N9dyjcXFywZ2B38n/TB15y4rth8mn55e4l99dx/B/F0=";
+      hash = "sha256-N9dijSbFyQb2B/JLNveB8wYHXnBzpv54IKdRu2BDH8U=";
+
     };
 
     dontUnpack = true;
@@ -64,6 +65,12 @@ in
       install -D -m 755 $src $out/bin/kepubify
     '';
   })
+
+  # typst setup 
+  typst
+  tinymist
+  typstyle
+
   ];
 
   # Export TESSDATA_PREFIX so graphical apps like Spectacle find the OCR traineddata models
